@@ -27,4 +27,4 @@ It includes the class method for connecting to the database and structuring the 
 
 + conexao.java - Includes the program connection with the database
 
-+ Includereditar.java - Includes the assembly of data to feed the database
++ IncluirEditar.java - Includes the assembly of data to feed the database
