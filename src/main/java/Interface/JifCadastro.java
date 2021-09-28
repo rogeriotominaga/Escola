@@ -4,12 +4,22 @@
  */
 package Interface;
 
+import java.util.Date;
+import persistencia.IncluirEditar;
+import Classes.Aluno;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author roger
  */
 public class JifCadastro extends javax.swing.JInternalFrame {
 
+    int acao;
+    int ativo;
+    Aluno objAluno = new Aluno();
+    IncluirEditar IncEdi;
+    
     /**
      * Creates new form JifCadastro
      */
@@ -30,7 +40,6 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         jcod = new javax.swing.JTextField();
         jnome = new javax.swing.JTextField();
         jbpesquisar = new javax.swing.JButton();
-        jdata = new javax.swing.JTextField();
         jcpf = new javax.swing.JTextField();
         jrg = new javax.swing.JTextField();
         jtelefone = new javax.swing.JTextField();
@@ -52,6 +61,7 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         jbsair = new javax.swing.JButton();
         jbexcluir = new javax.swing.JButton();
         jbcancelar = new javax.swing.JButton();
+        jdata = new com.toedter.calendar.JDateChooser();
 
         setClosable(true);
         setIconifiable(true);
@@ -68,10 +78,6 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         jbpesquisar.setText("...");
         getContentPane().add(jbpesquisar);
         jbpesquisar.setBounds(480, 40, 90, 30);
-
-        jdata.setEnabled(false);
-        getContentPane().add(jdata);
-        jdata.setBounds(580, 40, 110, 30);
 
         jcpf.setEnabled(false);
         getContentPane().add(jcpf);
@@ -101,7 +107,7 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         getContentPane().add(jLabel2);
         jLabel2.setBounds(90, 20, 90, 14);
 
-        jLabel3.setText("Data Nasc.:");
+        jLabel3.setText("Data Cadastro.:");
         getContentPane().add(jLabel3);
         jLabel3.setBounds(590, 20, 70, 14);
 
@@ -146,6 +152,11 @@ public class JifCadastro extends javax.swing.JInternalFrame {
 
         jbeditar.setText("Editar");
         jbeditar.setEnabled(false);
+        jbeditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbeditarActionPerformed(evt);
+            }
+        });
         getContentPane().add(jbeditar);
         jbeditar.setBounds(170, 320, 80, 30);
 
@@ -173,6 +184,10 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         getContentPane().add(jbcancelar);
         jbcancelar.setBounds(10, 370, 90, 30);
 
+        jdata.setEnabled(false);
+        getContentPane().add(jdata);
+        jdata.setBounds(600, 40, 160, 30);
+
         setBounds(0, 0, 1216, 788);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -181,6 +196,10 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         // Funções que ficarão ativas quando o Botão "NOVO" estiver em uso
        
         novo();
+        Date dataSistema = new Date();
+        jdata.setDate(dataSistema);
+        acao=1;
+        jrsim.setSelected(true);
     
 
     }//GEN-LAST:event_jbnovoActionPerformed
@@ -189,8 +208,47 @@ public class JifCadastro extends javax.swing.JInternalFrame {
         
     // Desativando as funções quando o Botão "SALVAR" for acionado
         
-        salvar();
+            int cod;
+            objAluno = new Aluno();
+            preencher_objetos();
+        
+            if(jrsim.isSelected()){
+            ativo=1;
+            }
+            if(jrnao.isSelected()) {
+            ativo=0;
+            }
+            
+            
+            try {
+                objAluno.setA_dtcadastro (jdata.getDate());
+            }
+            catch(Exception error) {
+                JOptionPane.showMessageDialog(this,"Erro " + error.getMessage());
+            }
+             
+                try {
+                IncEdi = new IncluirEditar();
+                if(acao==1){
+                   cod= IncEdi.Incluir(objAluno);
+                   jcod.setText(String.valueOf(cod));
+                   JOptionPane.showMessageDialog(this, "Salvo com sucesso");
+                   salvar();
+                                
+                }catch(Exception error) {
+                JOptionPane.showMessageDialog(this, "Operacao nao realizada" + error.getMessage());
+                              
+                }
+                jbsalvar.setEnabled(false);
+            }
     }//GEN-LAST:event_jbsalvarActionPerformed
+
+    private void jbeditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbeditarActionPerformed
+
+        
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbeditarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -213,7 +271,7 @@ public class JifCadastro extends javax.swing.JInternalFrame {
     private javax.swing.JButton jbsalvar;
     private javax.swing.JTextField jcod;
     private javax.swing.JTextField jcpf;
-    private javax.swing.JTextField jdata;
+    private com.toedter.calendar.JDateChooser jdata;
     private javax.swing.JTextArea jendereço;
     private javax.swing.JTextField jnome;
     private javax.swing.JTextField jrg;
@@ -234,10 +292,11 @@ public class JifCadastro extends javax.swing.JInternalFrame {
     jbsalvar.setEnabled(true);
     jbcancelar.setEnabled(true);
     jrsim.setSelected(true);
+    jcod.setText("");
     }
 
    public void salvar (){
-       jnome.setEnabled(false);
+    jnome.setEnabled(false);
     jendereço.setEnabled(false);
     jcpf.setEnabled(false);
     jrg.setEnabled(false);
@@ -254,7 +313,14 @@ public class JifCadastro extends javax.swing.JInternalFrame {
     jcpf.setText("");
     jrg.setText("");
     jtelefone.setText("");
-    jcod.setText("");
+  
    }
-
+   public void preencher_objetos() {
+       objAluno.setA_nome(jnome.getText().trim());
+       objAluno.setA_rg(jrg.getText().trim());
+       objAluno.setA_cpf(jcpf.getText().trim());
+       objAluno.setA_end(jendereço.getText().trim());
+       objAluno.setA_tel(jtelefone.getText().trim());
+       objAluno.setA_ativo(ativo);
+   }
 }
